@@ -62,7 +62,9 @@ def points(poly):
 def area(geom):
     return reproject(geom).area
 
-def reproject(geom, fr=pyproj.Proj(proj='longlat'), to=pyproj.Proj(proj='aea')):
+def reproject(geom, fr=pyproj.Proj(proj='longlat'), 
+              to=pyproj.Proj(proj='aea') #to = pyproj.Proj(proj='aea', lat_1=29.5, lat_2=42.5)
+              ):
     reproject_pts = partial(pyproj.transform, fr, to)
     return transform(reproject_pts, geom)
 
@@ -175,7 +177,7 @@ def eez(subset=None, filter_remote=True, tolerance=0.03):
 
 @cachable(keepweakref=True, version=3)
 def countries(subset=None, name_field=None, add_KV_to_RS=False,
-              tolerance=0.03, minarea=1.):
+              tolerance=0.03, minarea=.2):
     sf = shapefile.Reader(toDataDir('ne_10m_admin_0_countries/ne_10m_admin_0_countries.shp'))
     fields = dict(zip(map(itemgetter(0), sf.fields[1:]), count()))
     if subset is not None:
@@ -220,7 +222,7 @@ def laender(tolerance=0.03, shortnames=True):
     else:
         name = lambda x: x
 
-    sf = shapefile.Reader(toDataDir('vg250/VG250_LAN.shp'))
+    sf = shapefile.Reader(toDataDir('vg250/vg250_ebenen/VG250_LAN.shp'))
     return OrderedDict(sorted([(name(rec[6].decode('utf-8')), _shape2poly(sh, tolerance, projection='invwgs'))
                                for rec, sh in zip(sf.iterRecords(), sf.iterShapes())
                                if rec[1] == 4],

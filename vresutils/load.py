@@ -63,6 +63,7 @@ def timeseries_entsoe(years=list(range(2011, 2015+1)), countries=None, directory
 
     if directory is None:
         directory = toDataDir('entsoe_country_packages')
+	print("Trying to read directory "+directory)
     fns = sum((glob.glob(os.path.join(directory, '{}_{}.xls'.format(c, y)))
                for y in years
                for c in (('*',) if countries is None else countries)), [])
